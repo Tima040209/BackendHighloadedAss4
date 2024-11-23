@@ -1,0 +1,23 @@
+# docker-compose.yml
+version: '3'
+
+services:
+  # Сервис для Django приложения
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app  # Монтируем текущую директорию на хосте в контейнер
+    ports:
+      - "8000:8000"  # Прокидываем порт 8000 для доступа к приложению
+
+  # Сервис для Redis
+  redis:
+    image: redis:alpine  # Используем легковесный образ Redis
+
+  # Сервис для Celery
+  celery:
+    build: .
+    command: celery -A backend_highload worker --loglevel=info  # Запуск worker для Celery
+    depends_on:
+      - redis  # Celery зависит от Redis
