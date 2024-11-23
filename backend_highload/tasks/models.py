@@ -2,6 +2,9 @@
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.contrib.auth.models import User
+from pyclamd import pyclamd
+
+
 class Email(models.Model):
     recipient = models.EmailField()
     subject = models.CharField(max_length=200)
@@ -24,11 +27,10 @@ class Document(models.Model):
     file = models.FileField(upload_to='documents/', validators=[FileExtensionValidator(allowed_extensions=['pdf', 'docx'])])
 
     def clean(self):
-        # Проверяем файл на вирусы
         cd = pyclamd.ClamdUnixSocket()
-        cd.ping()  # Проверяем подключение к ClamAV
+        cd.ping()
 
-        result = cd.scan_file(self.file.path)  # Сканируем файл на вирусы
+        result = cd.scan_file(self.file.path)
 
         if result:
             raise ValueError("File is infected with a virus!")

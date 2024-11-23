@@ -6,12 +6,11 @@ from rest_framework import status
 class AuthenticationTests(TestCase):
 
     def setUp(self):
-        # Создаем пользователя для тестирования
         self.user = User.objects.create_user(username='testuser', password='testpassword123')
 
     def test_register_user(self):
         """Тестируем регистрацию пользователя"""
-        url = reverse('user_register')  # Убедитесь, что у вас есть URL для регистрации
+        url = reverse('user_register')
         data = {
             'username': 'newuser',
             'password': 'newpassword123',
@@ -22,7 +21,7 @@ class AuthenticationTests(TestCase):
 
     def test_login_user(self):
         """Тестируем вход пользователя"""
-        url = reverse('user_login')  # Убедитесь, что у вас есть URL для входа
+        url = reverse('user_login')
         data = {
             'username': 'testuser',
             'password': 'testpassword123'

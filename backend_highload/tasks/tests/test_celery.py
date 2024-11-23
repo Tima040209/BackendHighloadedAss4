@@ -1,7 +1,7 @@
 from django.test import TestCase
-from django.core import mail
-from tasks.tasks import send_email_task
 from unittest.mock import patch
+from backend_highload.tasks.tasks import send_email_task
+
 
 class CeleryTests(TestCase):
 

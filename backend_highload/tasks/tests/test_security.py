@@ -12,13 +12,12 @@ class SecurityTests(TestCase):
 
     def test_csrf_protection(self):
         """Тестируем защиту от CSRF атак"""
-        url = reverse('send_email')  # Убедитесь, что это реальный URL для отправки письма
+        url = reverse('send_email')
         data = {
-            'recipient': 'test@example.com',
+            'recipient': 'tima7087@gmail.com',
             'subject': 'Test Subject',
             'body': 'Test Body'
         }
-        # Не отправляем CSRF токен
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -26,10 +25,10 @@ class SecurityTests(TestCase):
         """Тестируем ограничение количества запросов (Rate Limiting)"""
         url = reverse('send_email')
         data = {
-            'recipient': 'test@example.com',
+            'recipient': 'tima7087@gmail.com',
             'subject': 'Test Subject',
             'body': 'Test Body'
         }
-        for _ in range(6):  # Отправляем 6 запросов, ожидаем, что 6-й будет отклонен
+        for _ in range(6):
             response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)

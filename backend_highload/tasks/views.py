@@ -44,31 +44,25 @@ def send_email_view(request):
     return render(request, 'send_email.html')
 from django.shortcuts import render
 def order_list(request):
-    # Проверяем, есть ли кэшированный результат
     orders = cache.get('orders_list')
 
     if not orders:
-        # Используем select_related для оптимизации запроса пользователя
-        # И prefetch_related для оптимизации запроса товаров
         orders = Order.objects.select_related('user') \
             .prefetch_related('items') \
             .all()
 
-        # Сохраняем результат в кэш на 15 минут
+
         cache.set('orders_list', orders, timeout=60*15)
 
     return render(request, 'tasks/order_list.html', {'orders': orders})
 def order_list(request):
-    # Фильтруем заказы по пользователю (например, для текущего пользователя)
+
     orders = cache.get(f'orders_list_{request.user.id}')
 
     if not orders:
-        # Используем select_related и prefetch_related для оптимизации запросов
         orders = Order.objects.select_related('user') \
             .prefetch_related('items') \
-            .filter(user=request.user)  # Фильтруем только заказы текущего пользователя
-
-        # Сохраняем результат в кэш на 15 минут
+            .filter(user=request.user)
         cache.set(f'orders_list_{request.user.id}', orders, timeout=60*15)
 
     return render(request, 'tasks/order_list.html', {'orders': orders})
